@@ -7,3 +7,8 @@ remove the lens and glue the radiation source from a smoke alarm to the sensor,
 give it a tinfoil hat, tape it up and plug it in. Yeah and don't ever burn it.
 
 Until you observe me working on this project, it is both dead and alive.
+
+Instructions
+------------
+
+Run ./configure.sh to create the named pipe and gather stats
