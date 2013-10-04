@@ -15,10 +15,8 @@ import sys
 from struct import unpack
 
 def process_stream(width=320, height=240, input=sys.stdin, output=sys.stdout,
-                   trim_top=0, trim_bottom=0):
+                   trim_top=0, trim_bottom=0, threshold=50):
     """Processes a stream <todo: docstring>"""
-
-    threshold = 50
 
     reader = lambda : input.read(width*height)
 
@@ -64,6 +62,8 @@ def main():
                         help='Ignore n rows at the top of each frame')
     parser.add_argument('--trim-bottom', dest='tb', type=int, default=0,
                         help='Ignore n rows at the bottom of each frame')
+    parser.add_argument('--threshold', dest='threshold', type=int, default=50,
+                        help='Brightness value that is considered an observation')
 
     #parser.add_argument('-f', '--format' ... ) # pixel format, selecting from list
 
@@ -81,7 +81,8 @@ def main():
             open_files.append(args.output)
 
         process_stream(width=args.width, height=args.height, input=args.input,
-                       output=args.output, trim_top=args.tt, trim_bottom=args.tb)
+                       output=args.output, trim_top=args.tt, trim_bottom=args.tb,
+                       threshold=args.threshold)
     finally:
         pass
         # close files 
