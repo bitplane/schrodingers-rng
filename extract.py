@@ -42,10 +42,10 @@ def process_stream(width=320, height=240, input=sys.stdin, output=sys.stdout,
         average_value = float(frame_total) / (width*height)
 
         if bright_value > threshold:
-            print '{frame},{brightness},{x},{y}'.format(frame=frame_number,
-                                                        brightness=bright_value, 
-                                                        x=bright_x,
-                                                        y=bright_y)
+            output.write('{frame},{brightness},{x},{y}\n'.format(frame=frame_number,
+                                                                 brightness=bright_value, 
+                                                                 x=bright_x,
+                                                                 y=bright_y))
 
         frame_number = frame_number + 1
    
@@ -69,15 +69,25 @@ def main():
 
     args = parser.parse_args()
 
+    # open any files
+    open_files = []
+
     try:
+        if type(args.input) == str:
+            args.input = open(args.input)
+            open_files.append(args.input)
+        if type(args.output) == str:
+            args.output = open(args.output, 'w')
+            open_files.append(args.output)
+
         process_stream(width=args.width, height=args.height, input=args.input,
                        output=args.output, trim_top=args.tt, trim_bottom=args.tb)
     finally:
         pass
         # close files 
-        #for f in self.openedFiles:
-        #    if not f.closed:
-        #        f.close()
+        for f in open_files:
+            if not f.closed:
+                f.close()
 
 
 if __name__ == '__main__':
