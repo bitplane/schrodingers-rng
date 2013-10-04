@@ -12,3 +12,13 @@ Instructions
 ------------
 
 Run ./configure.sh to create the named pipe and gather stats
+
+License
+-------
+Copyright (c) 2013 Gaz Davidson <gaz@bitplane.net>,
+
+Licensed under the [WTFPL](http://en.wikipedia.org/wiki/WTFPL) with one
+additional clause:
+
+   1. Don't blame me.
+
