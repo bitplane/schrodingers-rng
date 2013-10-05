@@ -8,7 +8,7 @@ severely dog-eared.
 
 Whether you need a quantum-tinfoil hat to protect you from malignant hidden local 
 variables, or you want a slow but steady stream of truly random bits generated on 
-your Raspberry Pi then you might want a Schrödinger's random number generator.
+your Raspberry Pi then you may and may not need a hardware random number generator.
 
 Disclaimer
 ----------
@@ -18,7 +18,13 @@ and although I have tried to make the minimum number of assumptions, a dice
 rolling or coin flipping machine would have less complexities and potential attack 
 vectors.
 
-Test with diehard before generating private keys with this method.
+The values captured are time (frame number), brightness, x position and y position
+BUT ONLY ONE SHOULD BE USED. Each value is tied to each other; a frame number 
+declares that the X and Y values are not off the screen; the angle of the radiation
+source may mean that the brightness of an event may leak information about its 
+position, or a given X position may make a Y position more likely.
+
+Test with diehard before generating private keys with this toy.
 
 Ingredients
 -----------
@@ -29,9 +35,9 @@ You will need...
 2. The cheapest Linux-compatible webcam money can buy.
 3. 1 ionization smoke detector containing americium-241.
 4. Any screwdriver except the sexist pink one that you're not allowed to use.
-5. A glue gun
-6. Tin / aluminium foil
-7. Insulation / gaffer / BDSM tape
+5. A glue gun.
+6. Tin / aluminium foil.
+7. Insulation / gaffer / BDSM tape.
 
 Instructions
 ------------
@@ -60,7 +66,9 @@ into your system's random pool, just `./capture.sh > /dev/random`.
 to-do
 -----
 
-Need to take the CSV and convert it into a bit-stream, then test with dieharder.
+Todo list and bugs are being held on the project's Github issue tracker:
+
+    https://github.com/bitplane/schrodingers-rng/issues
 
 License
 -------
