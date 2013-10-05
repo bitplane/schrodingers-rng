@@ -44,6 +44,7 @@ def process_stream(width=320, height=240, input=sys.stdin, output=sys.stdout,
                                                                  brightness=bright_value, 
                                                                  x=bright_x,
                                                                  y=bright_y))
+            output.flush()
 
         frame_number = frame_number + 1
    
@@ -56,8 +57,8 @@ def main():
                         help='Height of the data stream in pixels')
     parser.add_argument('-i', '--input', dest='input', default=sys.stdin,
                         help='The place to get our raw data. Defaults to stdin')
-    parser.add_argument('-o', '--output', dest='output', default=sys.stdin,
-                        help='A place to write the output. Defaults to stdout')
+    parser.add_argument('-o', '--output', dest='output', default=sys.stdout,
+                        help='A place to write (append) the output. Defaults to stdout')
     parser.add_argument('--trim-top', dest='tt', type=int, default=0,
                         help='Ignore n rows at the top of each frame')
     parser.add_argument('--trim-bottom', dest='tb', type=int, default=0,
@@ -74,10 +75,10 @@ def main():
 
     try:
         if type(args.input) == str:
-            args.input = open(args.input)
+            args.input = open(args.input, 'rb')
             open_files.append(args.input)
         if type(args.output) == str:
-            args.output = open(args.output, 'w')
+            args.output = open(args.output, 'wt+')
             open_files.append(args.output)
 
         process_stream(width=args.width, height=args.height, input=args.input,
