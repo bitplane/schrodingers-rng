@@ -1,4 +1,50 @@
-#!/usr/bin/sh
+#!/bin/sh
 
-# because streamer doesn't support
-mkfifo pipe.raw
+echo Looking for a suitable Python interpreter...
+
+interpreters="pypy jython python"
+
+for interpreter in $interpreters; do
+  if [ -z "$PYTHON" ]; then
+    i="`which $interpreter`"
+    if [ "$i" ]; then
+      $i -c "import sys; exit(sys.hexversion < 0x2070000 or sys.hexversion >= 0x3000000)"
+      if [ "$?" -eq "0" ]; then
+        echo "SUCCESS: Fastest suitable interpreter is $interpreter"
+        PYTHON=$interpreter
+      else
+        echo "WARNING: $interpreter found but wrong version"
+      fi
+    else
+      echo "WARNING: $interpreter not found"
+    fi
+  fi
+done
+
+if [ -z "$PYTHON" ]; then
+  echo "ERROR: Require Python 2 ($interpreters), version 2.7 or above"
+  exit
+fi
+
+if [ -z "`which streamer`" ]; then
+  echo "ERROR: Please install streamer"
+  exit
+else
+  echo "SUCCESS: Found streamer"
+fi
+
+# Find most recently added video device
+DEVICE="`ls -1 /dev/video* | tail -1`"
+
+if [ -z $DEVICE ]; then
+  echo "ERROR: Couldn't find a suitable video4linux device"
+  exit
+else
+  echo "SUCCESS: Using $DEVICE"
+fi
+
+# write config file
+echo PYTHON="$PYTHON" > config.conf
+echo DEVICE="$DEVICE" > config.conf
+
+echo "SUCCESS: config.conf written. You can now run ./capture.sh"
