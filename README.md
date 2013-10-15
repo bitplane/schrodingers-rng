@@ -18,13 +18,20 @@ and although I have tried to make the minimum number of assumptions, a dice
 rolling or coin flipping machine would have less complexities and potential attack 
 vectors.
 
-The values captured are time (frame number), brightness, x position and y position
-BUT ONLY ONE SHOULD BE USED. Each value is tied to each other; a frame number 
-declares that the X and Y values are not off the screen; the angle of the radiation
-source may mean that the brightness of an event may leak information about its 
-position, or a given X position may make a Y position more likely.
+While feeding this into /dev/random is considered safe, you should exercise caution
+if you choose to use the raw values themselves. From what I understand the safest 
+way to use this tool is to consider each row a single bit of information, select a
+column and compare its direction from the observed average to decide whether it 
+represents a 0 or a 1. 
 
-Test with diehard before generating private keys with this toy.
+ * Don't mess with the device while it is recording, it may skew the output.
+ * Consider each row of output to only have one bit of entropy. A value on the same
+   row is part of the same event and may share information; a frame number declares 
+   that the X and Y values are not off the screen; the angle of the radiation 
+   source may mean that the brightness of an event may leak information about its 
+   position, or a given X position may make a Y position more likely. 
+ * Don't generate random numbers on a machine that has been or will be connected
+   to the Internet and do not keep them for longer than is necessary.
 
 Ingredients
 -----------
@@ -56,12 +63,13 @@ or /dev/video1 if you already have a webcam. Install uvcview
 (`apt-get install guvcview`) or some other webcam viewer and you should observe a 
 black screen with a pixel flashing in a random location every 10-20 seconds.
 
-Run `./configure.sh` to check for dependencies and create the FIFO queue (needed 
+Run `./configure` to check for dependencies and create the FIFO queue (needed 
 because "streamer" actually lacks streaming output support). You should only need
-to `apt-get install streamer python dieharder`.
+to `apt-get install streamer python`, but `pypy` or `jython` are recommended for 
+speed/power use (the fastest available interpreter will be selected by `./configure`)
 
-Finally, run `./capture.sh` to dump the data out to CSV. This can be used to feed
-into your system's random pool, just `./capture.sh > /dev/random`. 
+Finally, run `./capture` to dump the data out to CSV. This can be used to feed
+into your system's random pool, just `./capture > /dev/random`. 
 
 to-do
 -----
