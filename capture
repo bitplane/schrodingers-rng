@@ -3,12 +3,12 @@
 # load settings from configuration file
 MY_DIR=$(dirname $(readlink -f $0))
 
-if [ ! -e "$MY_DIR/config.conf" ]; then
-  echo "Please run ./configure.sh to create config.conf"
+if [ ! -e "$MY_DIR/settings.conf" ]; then
+  echo "Please run ./configure to create settings.conf"
   exit
 fi
 
-. $MY_DIR/config.conf
+. $MY_DIR/settings.conf
 
 
 # Create a pipe because streamer doesn't support streaming to stdout
