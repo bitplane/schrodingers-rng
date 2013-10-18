@@ -44,7 +44,7 @@ else
 fi
 
 # write config file
-echo PYTHON="$PYTHON" > settings.conf
-echo DEVICE="$DEVICE" > settings.conf
+echo PYTHON="$PYTHON" >  settings.conf
+echo DEVICE="$DEVICE" >> settings.conf
 
 echo "SUCCESS: settings.conf written. You can now run ./capture.sh"
