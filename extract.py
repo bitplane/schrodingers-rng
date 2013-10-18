@@ -50,7 +50,8 @@ def process_stream(width=320, height=240, input=sys.stdin, output=sys.stdout,
    
 
 def main():
-    parser = argparse.ArgumentParser(description="Observes radioactive decay in a raw video stream")
+    parser = argparse.ArgumentParser(description=__doc__, 
+                                     formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('--width', dest='width', type=int, default=320,
                         help='Width of the data stream in pixels')
     parser.add_argument('--height', dest='height', type=int, default=240,
