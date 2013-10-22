@@ -86,7 +86,6 @@ def main():
                        output=args.output, trim_top=args.tt, trim_bottom=args.tb,
                        threshold=args.threshold)
     finally:
-        pass
         # close files 
         for f in open_files:
             if not f.closed:
