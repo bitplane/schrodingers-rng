@@ -13,7 +13,7 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
     length=0, column=0, min_samples=100, delimiter=','):
 
     def output(byte):
-        print '0x%x' % byte,
+        print '%02X' % byte,
 
     class CSVSamplerWithAverage(object):
         """A sequence generating class which takes a sequence of strings, 
@@ -31,12 +31,20 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
             return self
 
         def next(self):
-            line = self.lines.next()
+            line         = self.lines.next()
             sample       = float(line.split(self.delimiter)[self.column])
             self.total   = self.total + sample
             self.count   = self.count + 1
             self.average = self.total / self.count
             return sample
+
+    def bits_to_bytes(bits):
+        while True:
+            tot = 0
+            for i in range(8):
+                if bits.next() == 1:
+                    tot = tot + 2**i
+            yield tot
 
     lines   = (line for line in iter(input.readline, ''))
     samples = CSVSamplerWithAverage(lines, column, delimiter)
@@ -54,11 +62,15 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
     # away, so we join the two sources together
     all_samples = itertools.chain(backlog_samples, samples)
 
+    # but we don't want all the samples, the user might only want to copy
+    # a fixed number of bytes
+    #limited_samples = (all_samples.next() for i in range(length))
+
     # creates a sequence of bits from a sequence of numbers.
     bits = (0 if sample < samples.average else 1 for sample in all_samples)
 
-    for bit in bits:
-       print bit,
+    for byte in bits_to_bytes(bits):
+       output(byte)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, 
