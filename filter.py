@@ -12,7 +12,7 @@ from struct import pack
 def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII', 
     length=sys.maxint, column=0, min_samples=100, delimiter=','):
 
-    def output(byte):
+    def write(output, byte, format):
         print '%02X' % byte,
 
     class CSVSamplerWithAverage(object):
@@ -58,9 +58,9 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
     count           = min(max_samples, min_samples)
     backlog_samples = [samples.next() for i in range(count)]
 
-    # now we have a moving average to compare each sample against when
-    # pulling bits from the source, but we don't want to throw the rest
-    # away, so we join the two sources together
+    # now we have an average to compare each sample against when pulling bits 
+    # from source, but they take a long time to create and we don't want to throw 
+    # half an hour of data away, so we re-use the first part
     all_samples = itertools.chain(backlog_samples, samples)
 
     # but we don't want all the samples, the user might only want to copy
@@ -70,8 +70,11 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
     # creates a sequence of bits from a sequence of numbers.
     bits = (0 if sample < samples.average else 1 for sample in limited_samples)
 
+    # finally, we dump out the bytes to the 
     for byte in bits_to_bytes(bits):
-       output(byte)
+       write(output, byte, format)
+       # todo: probably not a good idea!
+       output.flush()
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, 
@@ -107,7 +110,6 @@ def main():
         for f in open_files:
             if not f.closed:
                 f.close()
-
 
 if __name__ == '__main__':
     main()
