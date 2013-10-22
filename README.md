@@ -75,9 +75,8 @@ into your system's random pool, just `./capture > /dev/random`.
 to-do
 -----
 
-Todo list and bugs are being held on the project's Github issue tracker:
-
-    https://github.com/bitplane/schrodingers-rng/issues
+Todo list and bugs are being held on the project's 
+[GitHub issue Tracker](https://github.com/bitplane/schrodingers-rng/issues)
 
 License
 -------
