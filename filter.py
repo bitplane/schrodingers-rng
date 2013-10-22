@@ -10,7 +10,7 @@ import sys
 from struct import pack
 
 def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII', 
-    length=0, column=0, min_samples=100, delimiter=','):
+    length=sys.maxint, column=0, min_samples=100, delimiter=','):
 
     def output(byte):
         print '%02X' % byte,
@@ -39,6 +39,7 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
             return sample
 
     def bits_to_bytes(bits):
+        """Converts a sequence of bits to a sequence of bytes"""
         while True:
             tot = 0
             for i in range(8):
@@ -50,7 +51,7 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
     samples = CSVSamplerWithAverage(lines, column, delimiter)
 
     # length is in bytes, samples are one bit each
-    max_samples = 8*length if length else sys.maxint
+    max_samples = min(8*length, sys.maxint)
 
     # first we read until we have an average for the column we want
     # we store these samples in the backlog and process them later.
@@ -64,10 +65,10 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
 
     # but we don't want all the samples, the user might only want to copy
     # a fixed number of bytes
-    #limited_samples = (all_samples.next() for i in range(length))
+    limited_samples = (all_samples.next() for i in xrange(max_samples))
 
     # creates a sequence of bits from a sequence of numbers.
-    bits = (0 if sample < samples.average else 1 for sample in all_samples)
+    bits = (0 if sample < samples.average else 1 for sample in limited_samples)
 
     for byte in bits_to_bytes(bits):
        output(byte)
@@ -79,7 +80,7 @@ def main():
                         help='The place to get our raw data. Defaults to stdin')
     parser.add_argument('-o', '--output', dest='output', default=sys.stdout,
                         help='A place to write (append) the output. Defaults to stdout')
-    parser.add_argument('--length', dest='length', type=int, default=0,
+    parser.add_argument('--length', dest='length', type=int, default=sys.maxint,
                         help="Number of bytes to extract before we quit.")
     parser.add_argument('--column', dest='column', type=int, default=0,
                         help="The column number in the input CSV")
