@@ -47,4 +47,4 @@ fi
 echo PYTHON="$PYTHON" >  settings.conf
 echo DEVICE="$DEVICE" >> settings.conf
 
-echo "SUCCESS: settings.conf written. You can now run ./capture.sh"
+echo "SUCCESS: settings.conf written. You can now run ./capture"

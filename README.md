@@ -1,14 +1,15 @@
 Schrödinger's RNG
 =================
 
-So you don't trust your operating system's random number generator, but you have
+So you don't trust your operating system's random number generator and you have
 blisters on your hands from flipping coins to create bitcoin private keys. 
 All your dice have worn out at the corners and every deck of cards you own is 
 severely dog-eared.
 
-Whether you need a quantum-tinfoil hat to protect you from malignant hidden local 
-variables, or you want a slow but steady stream of truly random bits generated on 
-your Raspberry Pi then you may and may not need a hardware random number generator.
+Whether you need a quantum-tinfoil hat to protect you from malignant hidden 
+non-local variables, or you want a slow but steady stream of truly random bits 
+generated on your Raspberry Pi then you may and may not need a hardware random 
+number generator.
 
 Disclaimer
 ----------
@@ -80,7 +81,7 @@ Todo list and bugs are being held on the project's Github issue tracker:
 
 License
 -------
-Copyright (c) 2013 Gaz Davidson <gaz@bitplane.net>,
+Copyright (c) 2013 Gaz Davidson <gaz@bitplane.net>
 
 Licensed under the [WTFPL](http://en.wikipedia.org/wiki/WTFPL) with one
 additional clause:
