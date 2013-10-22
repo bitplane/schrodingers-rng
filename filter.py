@@ -15,26 +15,31 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
     def output(byte):
         print '0x%x' % byte,
 
-    class Sampler(object):
-        """Implemented as a class so it can act as a cache
-        for the moving average."""
-        def __init__(self):
-            pass
+    class CSVSamplerWithAverage(object):
+        """A sequence generating class which takes a sequence of strings, 
+        splits them by delimiter, returns the given column and keeps
+        an average of the values."""
+        def __init__(self, lines, column, delimiter=','):
+            self.count     = 0
+            self.average   = 0
+            self.total     = 0
+            self.lines     = lines
+            self.delimiter = delimiter
+            self.column    = column
 
-        def make_sequence(self, lines, delimiter, column):
-            self.count   = 0
-            self.average = 0
-            self.total   = 0
-            for line in lines:
-                sample       = float(line.split(delimiter)[column])
-                self.total   = self.total + sample
-                self.count   = self.count + 1
-                self.average = self.total / self.count
-                yield sample
+        def __iter__(self):
+            return self
 
-    lines   = (line for line in iter(input.readline, '\n'))
-    sampler = Sampler()
-    samples = sampler.make_sequence(lines, delimiter, column)
+        def next(self):
+            line = self.lines.next()
+            sample       = float(line.split(self.delimiter)[self.column])
+            self.total   = self.total + sample
+            self.count   = self.count + 1
+            self.average = self.total / self.count
+            return sample
+
+    lines   = (line for line in iter(input.readline, ''))
+    samples = CSVSamplerWithAverage(lines, column, delimiter)
 
     # length is in bytes, samples are one bit each
     max_samples = 8*length if length else sys.maxint
@@ -49,8 +54,8 @@ def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII',
     # away, so we join the two sources together
     all_samples = itertools.chain(backlog_samples, samples)
 
-    # creates a sequence of bits from a sequence of numbers
-    bits = (0 if sample < sampler.average else 1 for sample in all_samples)
+    # creates a sequence of bits from a sequence of numbers.
+    bits = (0 if sample < samples.average else 1 for sample in all_samples)
 
     for bit in bits:
        print bit,
