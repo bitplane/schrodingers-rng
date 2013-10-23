@@ -13,8 +13,6 @@ FORMATS = ['hex',
            'decimal',
            'binary',
            'base64',
-           'base32',
-           'base16',
            'raw']
 
 def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0], 
@@ -33,6 +31,12 @@ def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0],
         def write(self, byte):
             if self.format == 'hex':
                 output.write('%02X' % byte)
+            if self.format == 'decimal':
+                pass
+            if self.format == 'base64':
+                pass
+            elif self.format == 'raw':
+                output.write(pack('B', byte))
 
             self.written = self.written + 1
 
@@ -140,7 +144,8 @@ def main():
 
         process_stream(input=args.input, output=args.output, length=args.length,
                        column=args.column, min_samples=args.min_samples,
-                       delimiter=args.delimiter, buffsize=args.buffsize)
+                       delimiter=args.delimiter, buffsize=args.buffsize,
+                       format=args.format)
     finally:
         # close files 
         for f in open_files:
