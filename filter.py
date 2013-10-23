@@ -10,9 +10,7 @@ import sys
 from struct import pack
 
 FORMATS = ['hex',
-           'decimal',
            'binary',
-           'base64',
            'raw']
 
 def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0], 
@@ -30,15 +28,15 @@ def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0],
 
         def write(self, byte):
             if self.format == 'hex':
-                output.write('%02X' % byte)
-            if self.format == 'decimal':
-                pass
-            if self.format == 'base64':
-                pass
+                self.output.write('%02X' % byte)
+                self.written = self.written + 2
+            if self.format == 'binary':
+                bits = "".join('1' if i**2 & byte else '0' for i in range(8))
+                self.output.write(bits)
+                self.written = self.written + 8
             elif self.format == 'raw':
-                output.write(pack('B', byte))
-
-            self.written = self.written + 1
+                self.output.write(pack('B', byte))
+                self.written = self.written + 1
 
             if self.buffsize and self.written % self.buffsize == 0:
                 output.flush()
