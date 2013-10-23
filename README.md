@@ -70,7 +70,25 @@ to `apt-get install streamer python`, but `pypy` or `jython` are recommended for
 speed/power use (the fastest available interpreter will be selected by `./configure`)
 
 Finally, run `./capture` to dump the data out to CSV. This can be used to feed
-into your system's random pool, just `./capture > /dev/random`. 
+into your system's random pool, just `./capture > /dev/random`.
+
+If you don't trust your system's random pool, which you really shouldn't unless 
+you compiled your kernel from source and have audited the source yourself,
+then you can pipe the output into filter.py. The following command will create
+a random 256-bit hexadecimal string:
+
+    ./capture > ./filter.py --column=2 --length=32
+
+Even the most cynical layman can audit every step to confirm that the random bits 
+are indeed coming from the universe and nobody else has seen them:
+
+ * Confirm that no white flashes appear on the webcam via streamer before you attach
+   the radiation source
+ * Confirm that flashes do appear in streamer after attaching it
+ * Confirm that your own observations match the observations in the CSV output
+ * Confirm that the final output data matches your observations
+ * Run it on a machine with no writable disks and no Internet connection, to ensure
+   you are the only person who can ever see the generated random sequence.
 
 to-do
 -----
