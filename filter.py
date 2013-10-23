@@ -39,13 +39,13 @@ def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0],
                 self.written = self.written + 1
 
             if self.buffsize and self.written % self.buffsize == 0:
-                output.flush()
+                self.output.flush()
 
         def __enter__(self):
             return self
 
         def __exit__(self ,type, value, traceback):
-            pass
+            self.output.flush()
 
     class CSVSamplerWithAverage(object):
         """A sequence generating class which takes a sequence of strings, 
