@@ -9,7 +9,15 @@ import sys
 
 from struct import pack
 
-def process_stream(input=sys.stdin, output=sys.stdout, format='ASCII', 
+FORMATS = ['hex',
+           'decimal',
+           'binary',
+           'base64',
+           'base32',
+           'base16',
+           'raw']
+
+def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0], 
     length=sys.maxint, column=0, min_samples=100, delimiter=','):
 
     def write(output, byte, format):
@@ -83,10 +91,14 @@ def main():
                         help='The place to get our raw data. Defaults to stdin')
     parser.add_argument('-o', '--output', dest='output', default=sys.stdout,
                         help='A place to write (append) the output. Defaults to stdout')
+    parser.add_argument('--format', dest='format', choices=FORMATS, default=FORMATS[0],
+                        help="Format of the output data, defaults to {}.".format(FORMATS[0]))
     parser.add_argument('--length', dest='length', type=int, default=sys.maxint,
                         help="Number of bytes to extract before we quit.")
     parser.add_argument('--column', dest='column', type=int, default=0,
                         help="The column number in the input CSV")
+    parser.add_argument('--delimiter', dest='delimiter', type=str, default=',',
+                        help="Column delimiter in the input file, defaults to comma")
     parser.add_argument('--min-samples', dest='min_samples', type=int, default=100,
                         help="Number of samples to take before we know the average")
 
@@ -104,7 +116,8 @@ def main():
             open_files.append(args.output)
 
         process_stream(input=args.input, output=args.output, length=args.length,
-                       column=args.column, min_samples=args.min_samples)
+                       column=args.column, min_samples=args.min_samples,
+                       delimiter=args.delimiter)
     finally:
         # close files 
         for f in open_files:
