@@ -18,10 +18,32 @@ FORMATS = ['hex',
            'raw']
 
 def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0], 
-    length=sys.maxint, column=0, min_samples=100, delimiter=','):
+    length=sys.maxint, column=0, min_samples=100, delimiter=',', buffsize=64):
 
-    def write(output, byte, format):
-        print '%02X' % byte,
+    class FormattedBinaryWriter(object):
+        """Writer class with context manager so it can stream b64 and other
+        formats and finish up at the end
+        """
+        def __init__(self, output, format, buffsize=64):
+            self.format   = format
+            self.output   = output
+            self.buffsize = buffsize
+            self.written  = 0
+
+        def write(self, byte):
+            if self.format == 'hex':
+                output.write('%02X' % byte)
+
+            self.written = self.written + 1
+
+            if self.buffsize and self.written % self.buffsize == 0:
+                output.flush()
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self ,type, value, traceback):
+            pass
 
     class CSVSamplerWithAverage(object):
         """A sequence generating class which takes a sequence of strings, 
@@ -78,11 +100,10 @@ def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0],
     # creates a sequence of bits from a sequence of numbers.
     bits = (0 if sample < samples.average else 1 for sample in limited_samples)
 
-    # finally, we dump out the bytes to the 
-    for byte in bits_to_bytes(bits):
-       write(output, byte, format)
-       # todo: probably not a good idea!
-       output.flush()
+    # Use the writer to dump the bytes out
+    with FormattedBinaryWriter(output, format, buffsize) as writer:
+        for byte in bits_to_bytes(bits):
+           writer.write(byte)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, 
@@ -101,6 +122,8 @@ def main():
                         help="Column delimiter in the input file, defaults to comma")
     parser.add_argument('--min-samples', dest='min_samples', type=int, default=100,
                         help="Number of samples to take before we know the average")
+    parser.add_argument('--buffer-size', dest='buffsize', type=int, default=64,
+                        help="Forces an output buffer flush after BUFFSIZE bytes")
 
     args = parser.parse_args()
 
@@ -117,7 +140,7 @@ def main():
 
         process_stream(input=args.input, output=args.output, length=args.length,
                        column=args.column, min_samples=args.min_samples,
-                       delimiter=args.delimiter)
+                       delimiter=args.delimiter, buffsize=args.buffsize)
     finally:
         # close files 
         for f in open_files:
