@@ -2,4 +2,6 @@
 *.png
 *.cover
 settings.conf
+*.csv
+*.raw
 
