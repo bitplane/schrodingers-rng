@@ -5,7 +5,7 @@ Extracts flashes of radiation from a camera attached to a radiation source.
 
 Pipe raw video frame data into this script, it will output comma separated
 values in the form:
-    frame_number,brightness,x_position,y_position
+    frames_since_last_event,brightness,x_position,y_position
 
 Requires Python 2.7 or above
 """
@@ -21,6 +21,8 @@ def process_stream(width=320, height=240, input=sys.stdin, output=sys.stdout,
     reader = lambda : input.read(width*height)
 
     frame_number = 0
+    last_frame   = 0
+    first_sample = False
 
     for frame_data in iter(reader, ''):
         frame_total = 0
@@ -40,11 +42,16 @@ def process_stream(width=320, height=240, input=sys.stdin, output=sys.stdout,
         average_value = float(frame_total) / (width*height)
 
         if bright_value > threshold:
-            output.write('{frame},{brightness},{x},{y}\n'.format(frame=frame_number,
-                                                                 brightness=bright_value, 
-                                                                 x=bright_x,
-                                                                 y=bright_y))
-            output.flush()
+            frame = frame_number - last_frame
+            if first_sample:
+                first_sample = False
+            else:
+                output.write('{f},{b},{x},{y}\n'.format(f=frame,
+                                                        b=bright_value, 
+                                                        x=bright_x,
+                                                        y=bright_y))
+                output.flush()
+            last_frame = frame_number
 
         frame_number = frame_number + 1
    
