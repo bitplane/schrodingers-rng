@@ -16,7 +16,19 @@ from struct import unpack
 
 def process_stream(width=320, height=240, input=sys.stdin, output=sys.stdout,
                    trim_top=0, trim_bottom=0, threshold=50):
-    """Processes a stream <todo: docstring>"""
+    """Processes a stream of 8-bit, raw video data and produce a CSV file
+    with one row per radiation event.
+
+    Keyword arguments:
+
+    width       -- The width of the video data in pixels (default 320)
+    height      -- The height of the video data in pixels (default 240)
+    input       -- File handle to read the data (defaults to stdin)
+    output      -- File handle to write the data (defaults to stdout)
+    trim_top    -- Pixels to exclude from the top of the image (default 0)
+    trim_bottom -- Pixels to exclude from the bottom of the image (default 0)
+    threshold   -- The threshold value for a radiactive decay event (default 50)
+    """
 
     reader = lambda : input.read(width*height)
 
