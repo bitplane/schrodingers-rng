@@ -15,6 +15,21 @@ FORMATS = ['hex',
 
 def process_stream(input=sys.stdin, output=sys.stdout, format=FORMATS[0], 
     length=sys.maxint, column=0, min_samples=100, delimiter=',', buffsize=64):
+    """Filters a stream created by extract.py and outputs a stream of random
+    numbers.
+
+    Keyword arguments:
+
+    input       -- input file/stream with csv data (defaults to stdin)
+    output      -- output file/stream to put random numbers (defaults to stdout)
+    format      -- output format, one of FORMATS (defaults to 'hex')
+    length      -- maximum length of the output in bytes (default is max integer)
+    column      -- column number to use in the CSV data (default 0)
+    min_samples -- minimum samples before taking an average (default 100)
+    delimiter   -- field separator in input data (default ',')
+    buffsize    -- number of bytes written before flushing output (default 64)
+    
+    """
 
     class FormattedBinaryWriter(object):
         """Writer class with context manager so it can stream b64 and other
