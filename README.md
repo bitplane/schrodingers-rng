@@ -16,7 +16,7 @@ Disclaimers
 
 This is a toy project and should not be taken seriously. I am not a 
 cryptographer and although I have tried to make the minimum number of 
-assumptions, a dice rolling or coin flipping machine would have fewer 
+assumptions, a die-rolling or coin-flipping machine would have fewer 
 complexities and potential attack vectors.
 
 A paranoid person must assume that processor manufacturers and kernel 
@@ -85,7 +85,7 @@ running it on a simulated processor that you understand, then you can pipe the
 output into `filter.py`. The following command will create a random 256-bit 
 hexadecimal string:
 
-    ./capture > ./filter.py --column=2 --length=32
+    ./capture | ./filter.py --column=2 --length=32
 
 Even the most cynical layman can audit every step to confirm that the random 
 bits are indeed coming from the universe and nobody else has seen them:
@@ -95,9 +95,9 @@ bits are indeed coming from the universe and nobody else has seen them:
  * Confirm that flashes do appear in streamer after attaching it.
  * Confirm that your own observations match the observations in the CSV output
  * Confirm that the final output data matches your observations
- * Run it on a machine with no writable disks and no Internet connection, to 
-   ensure that you are the only person who can ever see the generated random
-   sequence.
+ * Run it on a machine with no writable disks, Internet connection, network 
+   cards and inside a Faraday cage to ensure that you are the only person who
+   has ever seen the generated random sequence.
 
 to-do
 -----
